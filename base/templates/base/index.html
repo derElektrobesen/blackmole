@@ -1,0 +1,34 @@
+<h1>Upload image</h1>
+
+<form action="{% url 'upload_mole' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>{{ form.non_field_errors }}</p>
+
+    <p>{{ form.image.label_tag }} </p>
+    <p>
+        {{ form.image.errors }}
+        {{ form.image }}
+    </p>
+    <p><input type="submit" value="Upload" /></p>
+</form>
+
+{% if images %}
+
+<ul>
+    {% for img in images %}
+    <li>
+        <a href="{{ img.image.url }}">
+            {{ img.image.name }}
+            <br>
+            <img src="{{ img.image.url }}" alt="{{ img.image.name }}" height="150">
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>No already uploaded images</p>
+
+{% endif %}
