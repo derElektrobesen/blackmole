@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-import io
-import logging
-
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
 
-from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from .models import MoleImage
 from .forms import ImageForm
+
+import logging
 
 def index(request):
     return render_page(request, ImageForm())

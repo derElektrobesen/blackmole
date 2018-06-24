@@ -21,9 +21,10 @@
         <a href="{{ img.image.url }}">
             {{ img.image.name }}
             <br>
-            <img src="{{ img.image.url }}" alt="{{ img.image.name }}" height="150">
+            <img src="{{ img.image.url }}" alt="{{ img.image.name }}" height="150px">
         </a>
-        <a href="{% url 'process_mole' %}">Process image</a>
+        <br>
+        <a href="{% url 'process_mole' moleid=img.id %}">Process image</a>
     </li>
     {% endfor %}
 </ul>
