@@ -10,7 +10,7 @@ import skimage
 import skimage.color
 
 from skimage import exposure
-#from skimage import feature
+from skimage import feature
 
 class MoleImage:
     def __init__(self, img):
@@ -19,7 +19,7 @@ class MoleImage:
     def process(self):
         res = skimage.color.rgb2gray(self._img)
         res = exposure.adjust_log(res)
-        #res = feature.canny(res)
+        res = feature.canny(res, low_threshold=0.15, high_threshold=0.15, sigma=10).astype(int)
         return misc.toimage(res)
 
     def read_chan(self, img, chan):
