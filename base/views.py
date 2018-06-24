@@ -5,6 +5,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import MoleImage
 from .forms import ImageForm
 
+from .processing import MoleImage as ImageProcessor
+
+from PIL import Image
+
 import logging
 
 def index(request):
@@ -27,5 +31,10 @@ def upload_mole(request):
 
     return HttpResponseRedirect("/")
 
-def process_mole(request, moleid):
-    return HttpResponse("XXX")
+def process_mole(request, mole_id):
+    img = MoleImage.objects.get(pk=mole_id)
+    img = Image.open(img.image.file)
+    img = ImageProcessor(img).process()
+    resp = HttpResponse(content_type="image/gif")
+    img.save(resp, "JPEG")
+    return resp
