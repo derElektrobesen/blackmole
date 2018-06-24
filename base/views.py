@@ -31,3 +31,6 @@ def upload_mole(request):
     img.save()
 
     return HttpResponseRedirect("/")
+
+def process_mole(request, moleid):
+    return HttpResponse("XXX")
