@@ -6,7 +6,7 @@ import logging
 
 urlpatterns = [
     path("mole/", views.upload_mole, name="upload_mole"),
-    path("mole/<int:mole_id>/process", views.process_mole, name="process_mole"),
+    path("mole/<int:mole_id>/process/<str:action>", views.process_mole, name="process_mole"),
 ]
 
 urlpatterns += [

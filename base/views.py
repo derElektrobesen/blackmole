@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import MoleImage
 from .forms import ImageForm
 
-from .processing import MoleImage as ImageProcessor
+from .processing import actions, run_processor
 
 from PIL import Image
 
@@ -19,6 +19,7 @@ def render_page(request, form):
     return render(request, "base/index.html", {
         'images': images,
         'form': form,
+        'actions': actions,
     })
 
 def upload_mole(request):
@@ -31,10 +32,17 @@ def upload_mole(request):
 
     return HttpResponseRedirect("/")
 
-def process_mole(request, mole_id):
+def process_mole(request, mole_id, action):
+    args = {}
+    for k, v in request.GET.items():
+        args[k] = v
+
     img = MoleImage.objects.get(pk=mole_id)
     img = Image.open(img.image.file)
-    img = ImageProcessor(img).process()
-    resp = HttpResponse(content_type="image/gif")
+    img = run_processor(img, action, **args)
+    if img is None :
+        return Http404("unknown method")
+
+    resp = HttpResponse(content_type="image/jpeg")
     img.save(resp, "JPEG")
     return resp

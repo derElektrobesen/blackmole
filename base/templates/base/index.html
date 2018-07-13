@@ -1,3 +1,7 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
 <h1>Upload image</h1>
 
 <form action="{% url 'upload_mole' %}" method="post" enctype="multipart/form-data">
@@ -15,6 +19,19 @@
 
 {% if images %}
 
+<script>
+function update_image(img_id, form_id, base_url) {
+    var args = {};
+    $("#" + form_id + " tr").each(function () {
+        $(this).find("td input[type=number]").each(function() {
+            args[$(this).attr("name")] = $(this).val();
+        });
+    });
+
+    $("#" + img_id).attr("src", base_url + "?" + $.param(args))
+}
+</script>
+
 <ul>
     {% for img in images %}
     <li>
@@ -24,7 +41,47 @@
             <img src="{{ img.image.url }}" alt="{{ img.image.name }}" height="150px">
         </a>
         <br>
-        <a href="{% url 'process_mole' mole_id=img.id %}">Process image</a>
+        <ul>
+        {% for action in actions %}
+            {% if action.enabled %}
+                <li>
+                    {{ action.description }}:
+                    <br>
+                    <img
+                        src="{% url 'process_mole' mole_id=img.id action=action.name %}"
+                        height="300px"
+                        id="img_{{ img.id }}_{{ action.name }}"
+                    >
+
+                    <form id="frm_{{ img.id }}_{{ action.name }}" novalidate>
+                        <script>
+                            $(function () {
+                                $("#frm_{{ img.id }}_{{ action.name }}").submit(function (event) {
+                                    update_image(
+                                        "img_{{ img.id }}_{{ action.name }}",
+                                        "frm_{{ img.id }}_{{ action.name }}",
+                                        "{% url 'process_mole' mole_id=img.id action=action.name %}",
+                                    );
+                                    event.preventDefault();
+                                    return false;
+                                });
+                            });
+                        </script>
+
+                        <table>
+                        {% for field in action.fields %}
+                            <tr>
+                                <td>{{ field.name }}:</td>
+                                <td><input type="number" name="{{ field.name }}" value="{{ field.value }}"></td>
+                                <td><input type="submit" value="Update"></td>
+                            </tr>
+                        {% endfor %}
+                        </table>
+                    </form>
+                </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
     </li>
     {% endfor %}
 </ul>
